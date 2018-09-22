@@ -1,0 +1,80 @@
+#记录该项目中出现的Numpy函数：  tile(), shape(), sum(), argsort()
+# matplotlib出现的函数： subplots(), setp(), Line2D(), legend(), scatter()
+
+1. method  
+# sum()
+# 文档： https://docs.scipy.org/doc/numpy/reference/generated/numpy.sum.html
+# 示例解释：https://stackoverflow.com/questions/40857930/how-does-numpy-sum-with-axis-work
+# 引用示例如下：
+a = np.arange(30).reshape(2, 3, 5)
+print(a)
+
+[[[ 0  1  2  3  4]
+  [ 5  6  7  8  9]
+  [10 11 12 13 14]]
+
+ [[15 16 17 18 19]
+  [20 21 22 23 24]
+  [25 26 27 28 29]]]
+
+分析上述矩阵：
+            p  p  p  p  p
+            o  o  o  o  o
+            s  s  s  s  s
+
+     dim 2  0  1  2  3  4
+
+            |  |  |  |  |
+  dim 0     ↓  ↓  ↓  ↓  ↓
+  ----> [[[ 0  1  2  3  4]   <---- dim 1, pos 0
+  pos 0   [ 5  6  7  8  9]   <---- dim 1, pos 1
+          [10 11 12 13 14]]  <---- dim 1, pos 2
+  dim 0
+  ---->  [[15 16 17 18 19]   <---- dim 1, pos 0
+  pos 1   [20 21 22 23 24]   <---- dim 1, pos 1
+          [25 26 27 28 29]]] <---- dim 1, pos 2
+            ↑  ↑  ↑  ↑  ↑
+            |  |  |  |  |
+
+     dim 2  p  p  p  p  p
+            o  o  o  o  o
+            s  s  s  s  s
+
+            0  1  2  3  4
+
+ 对于矩阵a[dim0, dim1, dim2], axis 0 is dim 0, which refers to the most outer [ ], and for the most outer [ ], it has two parts which we
+call them as position. 
+sum(axis = 0) 指的是对于所有dim = 0的pos值求和， 即： 
+[[15 17 19 21 23]
+ [25 27 29 31 33]
+ [35 37 39 41 43]]
+
+2. method
+shape()
+文档： https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.shape.html
+示例： 来自官方文档的例子很有意思
+>>> x = np.array([1, 2, 3, 4])
+>>> x.shape
+(4,)
+>>> y = np.zeros((2, 3, 4))       #（2，3，4）在这里代表生成的零矩阵的shape，即三维shape: 2*3*4
+>>> y.shape
+(2, 3, 4)
+>>> y.shape = (3, 8)           #在不更改原有array大小的基础上改变原有array的shape: 3*8, 这也是为什么y.shape = (3, 6)会报错的原因
+>>> y
+array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
+       [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
+       [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.]])
+>>> y.shape = (3, 6)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: total size of new array must be unchanged
+>>> np.zeros((4,2))[::2].shape = (-1,)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: incompatible shape for a non-contiguous array
+  
+
+3. method
+tile()
+文档： https://docs.scipy.org/doc/numpy/reference/generated/numpy.tile.html?highlight=tile#numpy.tile
+示例： 
